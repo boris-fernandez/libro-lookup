@@ -40,9 +40,15 @@ public class Principal {
                     3 - Lista de libros registrados
                     4 - Lista de autores registrados
                     5 - Lista de libros por idioma
+                    6 - Lista de autores vivos por año
+                    7 - Buscar un autor por fecha nacimiento
+                    8 - Top 10 Libros mas descargados
+                    9 - Estadistica de total de descargas de la base de datos
+                    10 - Estadistica de total de descargas de la api
                     
                     0 - Salir
                     ==============================================
+                                 Ingresa una opcion =)
                     """;
             System.out.println(menu);
             opcion = teclado.nextInt();
@@ -64,6 +70,21 @@ public class Principal {
                 case 5:
                     mostrarListaPorIdioma();
                     break;
+                case 6:
+                    mostrarAutoresVivoPorAño();
+                    break;
+                case 7:
+                    buscarPorFechaNacimiento();
+                    break;
+                case 8:
+                    top10Libros();
+                    break;
+                case 9:
+                    estadisticaDescargas();
+                    break;
+                case 10:
+                    estadisticaDescargasApi();
+                    break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
                     break;
@@ -77,10 +98,11 @@ public class Principal {
     private DatosLibros DatosLibros() {
         System.out.println("Escribe el nombre del libro que deseas buscar");
         String nombreLibro = teclado.nextLine();
+        System.out.println("==============================================" + "\n");
         var json = consumoApi.obtenerDatos(URL_BASE + nombreLibro.replace(" ", "+") );
         Datos datos = conversor.obtenerDatos(json, Datos.class);
         Optional<DatosLibros> optionalDatosLibros = datos.libros().stream()
-                .filter(b -> b.titulo().equalsIgnoreCase(nombreLibro))
+                .filter(b -> b.titulo().toLowerCase().contains(nombreLibro.toLowerCase()))
                 .findFirst();
         if (optionalDatosLibros.isPresent()) {
             DatosLibros datosLibros = optionalDatosLibros.get();
@@ -122,6 +144,7 @@ public class Principal {
         mostrarLibroBuscado();
         System.out.println("Escribe el nombre del autor del cual quieres buscar");
         String nombreAutor = teclado.nextLine();
+        System.out.println("==============================================" + "\n");
         List<Libro> librosEncontrados = libros.stream()
                 .filter(libro -> libro.getAutores().getNombre().equalsIgnoreCase(nombreAutor))
                 .collect(Collectors.toList());
@@ -150,16 +173,72 @@ public class Principal {
     }
 
     private void mostrarListaPorIdioma() {
-        System.out.println("Ingresa el idioma que deseas buscar(es-en)");
+        System.out.println("Ingresa el idioma que deseas buscar(es-en-zh)");
         String idioma = teclado.nextLine();
+        System.out.println("==============================================" + "\n");
         List<Libro> librosFiltrados = repositoryLibro.findByIdioma(idioma);
         if (librosFiltrados.size()>0){
             librosFiltrados.forEach(System.out::println);
-            System.out.println("==============================================" + "\n");
         }else {
             System.out.println("No se encontro ningun libro con ese idioma");
         }
-
     }
+
+    private void mostrarAutoresVivoPorAño(){
+        System.out.println("Ingresa el año que deseas consultar");
+        int año = teclado.nextInt();
+        System.out.println("==============================================" + "\n");
+        List<Autore> listaAutores = repositoryAutor.filtrarAutorvivoporAño(año);
+        if (listaAutores.size()>0){
+            listaAutores.forEach(System.out::println);
+        }else {
+            System.out.println("------------------------------------------\n" +
+                    "No se encontro ningun autor vivo en esa fecha");
+        }
+    }
+
+    private void top10Libros(){
+        repositoryLibro.top10Libros().forEach(System.out::println);
+    }
+
+    private void buscarPorFechaNacimiento(){
+        System.out.println("Indica la fecha que deseas buscar");
+        int fechaNacimiento = teclado.nextInt();
+        Optional<Autore> busqueda = repositoryAutor.findByFechaNacimiento(fechaNacimiento)
+                .stream().findFirst();
+        if (busqueda.isPresent()){
+            System.out.println("Se encontro Autor q nacio en esa fecha \n");
+            System.out.println(busqueda.get());
+        }else {
+            System.out.println("No se encontro ningun autor que nacie en esa fecha");
+        }
+    }
+
+    private void estadisticaDescargas(){
+        System.out.println("Dime el total de descargas que deseas hacer una estadistica");
+        int valorDescargas = teclado.nextInt();
+        DoubleSummaryStatistics estadisticaDescarga = repositoryLibro.findAll().stream()
+                .filter(e -> e.getTotalDescarga() > valorDescargas)
+                .mapToDouble(Libro::getTotalDescarga)
+                .summaryStatistics();
+        System.out.println("---------------------------------------------------------------------------------------------------");
+        System.out.println("Numero de libros mayor a " + valorDescargas + " en descargas es: " + estadisticaDescarga.getCount());
+        System.out.println("Numero promedio de descargas mayores a " + valorDescargas + " en descargas es: " + estadisticaDescarga.getAverage());
+    }
+
+    private void estadisticaDescargasApi() {
+        System.out.println("Dime el total de descargas que deseas hacer una estadistica");
+        int valorDescargas = teclado.nextInt();
+        var json = consumoApi.obtenerDatos(URL_BASE);
+        Datos datos = conversor.obtenerDatos(json, Datos.class);
+        List<DatosLibros> librosApi = datos.libros();
+        DoubleSummaryStatistics estadisticaDescarga = librosApi.stream()
+                .filter(e -> e.totalDescarga() > valorDescargas)
+                .collect(Collectors.summarizingDouble(DatosLibros::totalDescarga));
+        System.out.println("---------------------------------------------------------------------------------------------------");
+        System.out.println("Numero de libros mayor a " + valorDescargas + " en descargas es: " + estadisticaDescarga.getCount());
+        System.out.println("Numero promedio de descargas mayores a " + valorDescargas + " en descargas es: " + estadisticaDescarga.getAverage());
+    }
+
 
 }
