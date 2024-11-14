@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class ConvertirDatos implements  IConvierteDatos{
     private ObjectMapper objectMapper = new ObjectMapper();
 
-
     @Override
     public <T> T obtenerDatos(String json, Class<T> clase) {
         try {
