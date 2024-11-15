@@ -19,7 +19,7 @@ Con un **backend en Spring Boot** y **PostgreSQL** como base de datos, ofrece un
 
 ## ⚙️ **Configuración del Proyecto**
 1. **Crear archivo `.env`:**
-   - Copia el archivo de ejemplo `.env.example` que se encuentra en la raíz del proyecto y renómbralo a `.env`. 📝
+   - Renombra el archivo `.env.example` que se encuentra en la raíz del proyecto a `.env`. 📝
    - Edita el archivo `.env` con las credenciales de tu base de datos. 🔑
    - **Ejemplo de configuración:**
      ```bash
