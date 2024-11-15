@@ -34,4 +34,5 @@ Con un **backend en Spring Boot** y **PostgreSQL** como base de datos, ofrece un
 
 ### 💬 **¡Gracias por visitar el proyecto!**
 Si tienes alguna pregunta o sugerencia, no dudes en **abrir un issue** o **contribuir** al repositorio. Tu feedback es muy valioso para seguir mejorando. ¡Esperamos que disfrutes utilizando **Libro Lookup**! 😄
+
 ¡Feliz codificación! 🚀👨‍💻👩‍💻
