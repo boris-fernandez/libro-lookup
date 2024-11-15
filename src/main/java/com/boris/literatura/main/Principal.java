@@ -49,6 +49,7 @@ public class Principal {
                     0 - Salir
                     ==============================================
                                  Ingresa una opcion =)
+                    ==============================================
                     """;
             System.out.println(menu);
             opcion = teclado.nextInt();
@@ -239,6 +240,5 @@ public class Principal {
         System.out.println("Numero de libros mayor a " + valorDescargas + " en descargas es: " + estadisticaDescarga.getCount());
         System.out.println("Numero promedio de descargas mayores a " + valorDescargas + " en descargas es: " + estadisticaDescarga.getAverage());
     }
-
 
 }
