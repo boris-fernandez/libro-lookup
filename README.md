@@ -18,9 +18,6 @@ Con un **backend en Spring Boot** y **PostgreSQL** como base de datos, ofrece un
   - **Gutendex API**: Usada para buscar y obtener información sobre libros de dominio público de forma dinámica. 🌍
 
 ## ⚙️ **Configuración del Proyecto**
-
-### Backend
-
 1. **Crear archivo `.env`:**
    - Copia el archivo de ejemplo `.env.example` que se encuentra en la raíz del proyecto y renómbralo a `.env`. 📝
    - Edita el archivo `.env` con las credenciales de tu base de datos. 🔑
